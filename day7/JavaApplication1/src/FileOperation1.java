@@ -1,5 +1,5 @@
 
-import java.io.File;
+import javazr.io.File;
 import java.util.Scanner;
 
 /**
@@ -51,6 +51,10 @@ public class FileOperation1 {
         }
         
     }
+    /**
+     * 
+     * @param args does not require any arguments
+     */
     public static void main(String args[])
     {
         Scanner sc=new Scanner(System.in);
