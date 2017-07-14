@@ -132,7 +132,7 @@ public class StudentDb {
         } finally {
             try {
                 ois.close();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.out.println(e);
             }
         }
@@ -172,7 +172,7 @@ public class StudentDb {
             location = tmp.getAbsolutePath().substring(0, tmp.getAbsolutePath().lastIndexOf("\\"));
             //System.out.println(location);
             tmp.delete();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error in getAbsolutePath " + e);
         }
         return location;
@@ -192,7 +192,7 @@ public class StudentDb {
 
             Student ob = new Student(id, name, address);
             writeMyObject(ob);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error in registerAStudent " + e);
         }
     }
@@ -215,7 +215,7 @@ public class StudentDb {
             } else {
                 readMyObject(idOfStudent);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error in search a student " + e);
         }
     }
