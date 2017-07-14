@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Scanner;
 
 
 /**
@@ -18,20 +17,67 @@ import java.util.Scanner;
  * This code creates separate files for all students, each file is an object having its details
  * 
  * @author Bisvarup Mukherjee
+ * @version 13/07/2017
  */
 public class StudentDb {
     static final String FOLDER_NAME = "class";
     static final BufferedReader RED = new BufferedReader(new InputStreamReader(System.in));
-    public static void main(String[] args) throws IOException {
+    
+    
+    /**
+     * This function checks if the default folder exists or not, if it does not exist it creates the folder
+     * after checking the permissions
+     * If folder cannot be created it says so and the program is terminated 
+     */
+    public static void createDefaultFolder()
+    {
+       File f=new File(FOLDER_NAME);
+       if(f.exists())
+       {
+           /**folder already exists
+            *
+            */
+            
+           ;
+       }
+       else
+       {
+           /**This means the folder does not exist
+            * so create the folder now
+           */
+           try
+           {
+               f.mkdir();
+           }catch(Exception e)
+           {
+               System.out.println("Error in making default directory, the program is going to terminate now.\nThe error is "+e);
+               System.exit(0);
+           }
+       }
+    }
+    
+    
+    /**
+     * 
+     * @param args Takes input from the console, so even if args are present it discards them
+     * @throws IOException 
+     */
+    public static void main(String[] args)  {
 
         int ch = 4;
+        createDefaultFolder();
         do {
             System.out.println("1.Register\n2.Show All\n3.Show Particular Student\n4.Exit");
-            ch = Integer.parseInt(RED.readLine());
+            
+            try {
+             ch = Integer.parseInt(RED.readLine());   
+            } catch (Exception e) {
+                System.out.println("Error in taking ch(choice) as input "+e);
+            }
+            
             switch (ch) {
                 case 1:
                     registerAStudent();
-
                     break;
                 case 2:
                     showAll();
@@ -68,7 +114,7 @@ public class StudentDb {
     }
     
     /**
-     * 
+     * This function reads a student object details.
      * @param filename This is the filename which is to be searched in the class folder
      */
     static void readMyObject(String filename) {
@@ -93,6 +139,9 @@ public class StudentDb {
 
     }
 
+    /**
+     * This function shows all the students' details who have registered
+     */
     private static void showAll() {
 
         try {
@@ -111,6 +160,10 @@ public class StudentDb {
 
     }
 
+    /**
+     * This function returns the absolute path of the default FOLDER
+     * @return String, returns the absolute path of FOLDER within which the text files are saved
+     */
     private static String getAbsolutePathOfFolder() {
         String location = "";
         try {
@@ -124,7 +177,10 @@ public class StudentDb {
         }
         return location;
     }
-
+    
+    /**
+     * This function registers a new Student to the system, which means creating the associated text file in the default FOLDER
+     */
     private static void registerAStudent() {
         try {
             System.out.println("Enter Name of Student");
@@ -140,7 +196,14 @@ public class StudentDb {
             System.out.println("Error in registerAStudent " + e);
         }
     }
-
+    
+    /**
+     * This function takes in student id and tries to search for the student
+     * if it finds the student information it displays it otherwise it prints an
+     * appropriate error message
+     * 
+     * 
+     */
     private static void searchAStudent() {
         try {
             System.out.println("Enter id of Student");
@@ -156,5 +219,4 @@ public class StudentDb {
             System.out.println("Error in search a student " + e);
         }
     }
-
 }

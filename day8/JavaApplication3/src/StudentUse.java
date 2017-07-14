@@ -15,6 +15,9 @@ public class StudentUse  {
         System.out.println("Starting Program");
         (new StudentUse()).readMyObject();
     }
+    /**
+     * 
+     */
     void readMyObject()
     {
         ObjectInputStream ois=null;
@@ -43,6 +46,10 @@ public class StudentUse  {
         }
         
     }
+    
+    /**
+     * 
+     */
     void writeMyObject() {
         Student ob=new Student("1","Bisvarup Mukherjee","address 1");
         ObjectOutputStream oos=null;

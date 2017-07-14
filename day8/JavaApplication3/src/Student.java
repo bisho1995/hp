@@ -4,7 +4,8 @@ import java.io.Serializable;
 /**
  * This class keeps the records of a student, the records are id,name,address
  * it also has a function called getDetails which would get the details of the student object
- *@date 13/07/2017
+ * @version  13/07/2017
+ * 
  * @author Bisvarup
  */
 public class Student implements Serializable {
