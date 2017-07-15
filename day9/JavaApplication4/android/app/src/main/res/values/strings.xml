@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Basic Calculator(V1.4)</string>
+    <string name="app_name">Basic Calculator</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 </resources>

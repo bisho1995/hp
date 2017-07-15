@@ -71,9 +71,18 @@ public class MainActivity extends AppCompatActivity {
         /**
          * clear all fields
          */
-        num1.setText("");
-        num2.setText("");
-        tv.setText("");
+        try{
+
+            num1.setText("");
+            num2.setText("");
+            this.tv.setText("");
+        }
+        catch(Exception e)
+        {
+            System.err.println("Error in clear method "+e);
+        }
+
+
     }
 
     /**
@@ -117,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         String s="Result = "+(this.number1/this.number2)+"";
         this.tv.setText(s);
 
-    }
+    }//end of div
 
     /**
      * This function multiplies two numbers from the textboxes and gives the output.
@@ -129,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         String s="Result = "+(this.number1*this.number2)+"";
         this.tv.setText(s);
 
-    }
+    }//end of mul
 
     /**
      * This function takes two numbers from the text boxes and finds the modulus of the two numbers in the form of
@@ -143,6 +152,6 @@ public class MainActivity extends AppCompatActivity {
         String s="Result = "+(this.number1%this.number2)+"";
         this.tv.setText(s);
 
-    }
+    }//end of mod
 
-}
+}//end of class

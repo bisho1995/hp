@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffeeee"
-    tools:context="the_tinker_project.co.in.myapplication.MainActivity">
 
+    tools:context="the_tinker_project.co.in.myapplication.MainActivity">
 
     <EditText
         android:id="@+id/num1"
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/sub"
         android:layout_alignTop="@+id/div"
-        android:onClick=""
+        android:onClick="clear"
         android:text="Clear" />
 
 
