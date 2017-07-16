@@ -28,8 +28,8 @@ public class FileOperation1 {
             for(String lf:list)
             {
                 File tmpFile=new File(f.getAbsolutePath(),lf);
-                System.out.println(tmpFile+" "+tmpFile.isDirectory());
                 if(tmpFile.isDirectory() && !tmpFile.isHidden())
+                System.out.println(tmpFile+" "+tmpFile.isDirectory());
                 {
                     System.out.println("Files in "+lf+" are ");
                     try

@@ -17,7 +17,7 @@
         android:layout_marginTop="29dp"
         android:ems="10"
         android:hint="number1"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/num2"
@@ -28,7 +28,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="number2"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/display"

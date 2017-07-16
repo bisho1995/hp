@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="the_tinker_project.co.in.mcq2.MainActivity">
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="36dp"
+        android:text="ques1" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="13dp">
+
+        <RadioButton
+            android:id="@+id/rb1_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_below="@+id/textView7"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            android:text="optn1" />
+
+        <RadioButton
+            android:id="@+id/rb1_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/rb1_1"
+            android:layout_marginStart="59dp"
+            android:layout_toEndOf="@+id/rb1_1"
+            android:layout_weight="1"
+            android:text="optn2" />
+
+        <RadioButton
+            android:id="@+id/rb1_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/rb1_1"
+            android:layout_below="@+id/rb1_1"
+            android:layout_marginTop="34dp"
+            android:layout_weight="1"
+            android:text="optn3" />
+
+        <RadioButton
+            android:id="@+id/rb1_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/rb1_3"
+            android:layout_alignStart="@+id/rb1_2"
+            android:layout_weight="1"
+            android:text="optn4" />
+
+    </RadioGroup>
+</RelativeLayout>

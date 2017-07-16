@@ -39,11 +39,45 @@ public class MainActivity extends AppCompatActivity {
         EditText num2=(EditText)findViewById(R.id.num2);
         this.tv=(TextView)findViewById(R.id.display);
 
+
+        String numString1,numString2;
+
+        numString1=num1.getText().toString();
+        numString2=num2.getText().toString();
+
+        if(numString1=="")
+        {
+            numString1="0";
+        }
+        if(numString2=="")
+        {
+            numString2="0";
+        }
+
+
         /**
          * Get the actual data from the objects and store them in these instance variables
          */
-        this.number1=Integer.parseInt(num1.getText().toString());
-        this.number2=Integer.parseInt(num2.getText().toString());
+
+
+        //handle the situations when the user doesnot supply witha  number but still
+        //hit the add or any other button
+        try
+        {
+            this.number1=Integer.parseInt(numString1);
+        }
+        catch (Exception e)
+        {
+            this.number1=0;
+        }
+        try
+        {
+            this.number2=Integer.parseInt(numString2);
+        }
+        catch(Exception e)
+        {
+            this.number2=0;
+        }
 
     }
 
@@ -123,8 +157,14 @@ public class MainActivity extends AppCompatActivity {
     public void div(View view)
     {
         this.getDataFromTextboxes();
-        String s="Result = "+(this.number1/this.number2)+"";
-        this.tv.setText(s);
+        try
+        {
+            String s="Result = "+(this.number1/this.number2)+"";
+            this.tv.setText(s);
+        }catch(Exception e)
+        {
+            this.tv.setText("NAN");
+        }
 
     }//end of div
 
@@ -135,8 +175,16 @@ public class MainActivity extends AppCompatActivity {
     public void mul(View view)
     {
         this.getDataFromTextboxes();
-        String s="Result = "+(this.number1*this.number2)+"";
-        this.tv.setText(s);
+
+
+        try
+        {
+            String s="Result = "+(this.number1*this.number2)+"";
+            this.tv.setText(s);
+        }catch(Exception e)
+        {
+            this.tv.setText("NAN");
+        }
 
     }//end of mul
 
@@ -149,8 +197,14 @@ public class MainActivity extends AppCompatActivity {
     {
         this.getDataFromTextboxes();
 
-        String s="Result = "+(this.number1%this.number2)+"";
-        this.tv.setText(s);
+        try
+        {
+            String s="Result = "+(this.number1%this.number2)+"";
+            this.tv.setText(s);
+        }catch(Exception e)
+        {
+            this.tv.setText("NAN");
+        }
 
     }//end of mod
 
