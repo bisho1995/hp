@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="the_tinker_project.co.in.broadcast1.MainActivity">
+
+    <Button
+        android:id="@+id/callMautushi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="45dp"
+        android:onClick="dialMautushi"
+        android:text="Call Mautushi"
+        tools:layout_editor_absoluteX="47dp"
+        tools:layout_editor_absoluteY="178dp" />
+
+    <Button
+        android:id="@+id/textMautushi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Text Mautushi"
+        android:onClick="textMautushi"
+        android:layout_alignBaseline="@+id/callMautushi"
+        android:layout_alignBottom="@+id/callMautushi"
+        android:layout_toEndOf="@+id/callMautushi"
+        android:layout_marginStart="23dp" />
+</RelativeLayout>
