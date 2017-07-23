@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/holder"
     android:layout_height="match_parent"
+    android:background="@drawable/bkgnd"
     tools:context="the_tinker_project.co.in.musicplayer.MainActivity">
 
     <Button
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="97dp"
+        android:layout_marginBottom="70dp"
         android:layout_marginEnd="16dp"
         android:background="#646363"
         android:onClick="stop"
@@ -46,13 +47,15 @@
 
     <Button
         android:id="@+id/next"
+        android:textColor="#000000"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/stop"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="22dp"
-        android:layout_marginEnd="60dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="80dp"
         android:elevation="10dp"
         android:onClick="next"
         android:text="Next" />
@@ -64,10 +67,12 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/next"
         android:layout_alignStart="@+id/start"
-        android:layout_marginStart="50dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="90dp"
         android:elevation="8dp"
         android:onClick="prev"
-        android:text="Prev" />
+        android:text="Prev"
+        android:textColor="#000000" />
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -80,6 +85,7 @@
         android:id="@+id/maxDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/seekBar"
         android:layout_marginRight="5dp"
@@ -89,6 +95,7 @@
         android:id="@+id/currentTime"
         android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
+        android:textColor="#ffffff"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/maxDuration"
         android:layout_alignParentStart="true"
@@ -96,23 +103,27 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="210dp"
         android:orientation="vertical"
         android:divider="@color/colorPrimary"
 
-        android:layout_marginTop="130dp">
+        android:layout_above="@+id/stop"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2">
 
         <ListView
             android:id="@+id/lv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:dividerHeight="0dp"
-            android:divider="@null"
+            android:layout_height="322dp"
             android:layout_below="@+id/currentTime"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="0dp"
+            android:background="#f15d5d"
+            android:divider="@null"
+            android:dividerHeight="0dp"
 
-            android:layout_marginTop="0dp" />
+            android:listSelector="#ffff5e"
+            tools:divider="@android:color/darker_gray" />
     </LinearLayout>
 
 
@@ -128,6 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:textColor="#ffffff"
         android:layout_below="@+id/volume"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="60dp"
@@ -137,6 +149,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:layout_alignBottom="@+id/textView"
         android:layout_alignStart="@+id/currentTime"
         android:text="Min Vol" />
@@ -146,13 +159,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+
         android:layout_alignTop="@+id/prev"
+        android:layout_marginLeft="35dp"
         android:text="ToggleButton" />
 
     <TextView
         android:id="@+id/log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:layout_alignEnd="@+id/pause"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="25dp" />

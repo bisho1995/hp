@@ -33,7 +33,8 @@
         </activity>
         <activity android:name=".songs" />
         <activity android:name=".About_App" />
-        <activity android:name=".About_Me"></activity>
+        <activity android:name=".About_Me" />
+        <activity android:name=".SMSDump"></activity>
     </application>
 
 </manifest>

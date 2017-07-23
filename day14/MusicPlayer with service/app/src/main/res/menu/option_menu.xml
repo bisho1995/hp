@@ -6,8 +6,11 @@
         android:id="@+id/opt1"
         android:title="About App" />
     <item
-        android:id="@+id/opt2"
-        android:title="About Me" />
+    android:id="@+id/opt2"
+    android:title="About Me" />
+    <item
+        android:id="@+id/opt4"
+        android:title="SMS dump" />
     <item
         android:id="@+id/opt3"
         android:title="Exit" />
