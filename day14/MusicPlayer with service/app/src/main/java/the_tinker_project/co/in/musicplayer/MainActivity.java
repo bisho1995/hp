@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         nb.setDefaults(Notification.DEFAULT_ALL);
         nb.setAutoCancel(false);
 
+
         Intent next=new Intent(this,MusicPlayerService.class);
         next.putExtra("optn","playNextSong");
 
@@ -394,12 +395,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
+    /**
+     * What should happen when the app is paused,, after pause it will be destroyed
+     */
     @Override
     protected void onPause() {
         super.onPause();
         //sm.unregisterListener(this);
     }
 
+    /**
+     * What should happen when the app is resumed
+     * in my case when the app is resumed the sensors has to be reinitialized if the sensor button
+     * was pressed.
+     */
     @Override
     protected void onResume()
     {
@@ -411,6 +420,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    /**
+     * This is the function where all the initializations take place
+     * every single static variables are initialized from here
+     */
     public void initialize()
     {
 
@@ -502,6 +515,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * This function is run only once till now(25-07-2017) when the app is installed for
+     * the very first time. This function would gather all the sms from the
+     * system and save it in a database
+     * follow is the code for
+     * 1. putting data to database
+     * 2. extracting sms messages from the system
+     */
     private void getSmsFromSystem() {
         //Toast.makeText(this, "Create sms db", Toast.LENGTH_SHORT).show();
         try
@@ -561,6 +582,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * This is the finction which has to be overridden if we want to create an
+     * option menu
+     * option menu is the 3 dots that appear on the right side of the app
+     * in this app when the option menu is pressed 4 options show as of
+     * 25/07/2017 they are About Me,About App,Sms Dump and exit.
+     * except exit for every option a new activity is started
+     * with exit the app closes
+     * In this method only the menu is setup the corresponding actions are not described
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
@@ -568,6 +601,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     *This code determines what happens when the option menu is clicked
+     * what action is to be followed.
+     * @param item the item which is clicked
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.opt1)
@@ -589,23 +628,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This is what happens when the start button is clicked
+     * @param view
+     */
     public void start(View view)
     {
-        i=new Intent(this,MusicPlayerService.class);
-        i.putExtra("optn","startSong");
-        startService(i);
+        requestStartSong();
 
     }
 
 
-
+    /**
+     * This is what happens when stop button is clicked
+     * @param view
+     */
     public void stop(View view)
     {
+        requestStopSong();
+
+    }
+
+    /**
+     * This function puts a request to the service to stop the song which is being played.
+     */
+    private void requestStopSong() {
         i=new Intent(this,MusicPlayerService.class);
         i.putExtra("optn","stopSong");
         startService(i);
-
     }
+
+    /**
+     * This is what happens when the pause button is hit
+     * The app sends a request to the service class to pause the current song.
+     * @param view
+     */
     public void pause(View view)
     {
         i=new Intent(this,MusicPlayerService.class);
@@ -614,7 +671,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-
+    /**
+     * This is what happens when the prev button is hit
+     * The app sends a request to the service class to move to the next song
+     * @param view
+     */
     public void prev(View view)
     {
         //Toast.makeText(MainActivity.this,"prev" ,Toast.LENGTH_SHORT).show();
@@ -624,6 +685,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startService(i);
 
     }
+
+    /**
+     * This is what happens when the next button is hit
+     * The app sends a request to the service class to move to the next song
+     * @param view
+     */
     public void next(View view)
     {
         //Toast.makeText(MainActivity.this,"next" ,Toast.LENGTH_SHORT).show();
@@ -634,6 +701,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * This is a function which is to be overridden to use the sensor class
+     * This method is called whenever a sensor detects some change
+     * any change detected by the sensor this method is called and the corresponding operations
+     * are mentioned here.
+     * @param sensorEvent
+     */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
@@ -748,14 +822,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else
             {
                 Toast.makeText(this, "play", Toast.LENGTH_SHORT).show();
-                i=new Intent(this,MusicPlayerService.class);
-                i.putExtra("optn","startSong");
-                startService(i);
+                requestStartSong();
             }
         }
 
     }
 
+    /**
+     * Request the service class to start the song.
+     */
+    private void requestStartSong() {
+        i=new Intent(this,MusicPlayerService.class);
+        i.putExtra("optn","startSong");
+        startService(i);
+    }
+
+    /**
+     * This function is called when the accuracy of the sensor is changed
+     * @param sensor
+     * @param i
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 

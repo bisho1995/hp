@@ -19,6 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        
+        
+        
+        <receiver android:name=".PhoneReceived">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"></action>
+            </intent-filter>
+        </receiver>
+        
+        
         <activity android:name=".MainActivity" />
 
         <service android:name=".MusicPlayerService" />
