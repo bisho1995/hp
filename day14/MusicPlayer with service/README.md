@@ -29,3 +29,14 @@
     </ul>
   </div>
 </div>
+<div>
+  <h2>
+    Some notes about this app and Copyright issues.
+  </h2>
+  <div>
+    The source code is free to use, modify, change as per your will. There will not be any copyright issues. 
+  </div>
+  <div>
+    A mention of the developer's name in the credits section of your app would be highly appreciated.
+  </div>
+</div>
