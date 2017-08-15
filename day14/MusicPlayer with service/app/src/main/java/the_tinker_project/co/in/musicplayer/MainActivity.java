@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //request the android system to remove the small top bar at the top
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

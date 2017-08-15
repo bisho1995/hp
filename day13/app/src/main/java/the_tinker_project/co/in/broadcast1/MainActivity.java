@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
     public void textMautushi(View view)
     {
         SmsManager sm=SmsManager.getDefault();
-        sm.sendTextMessage("9903458751",null,"Hi Priya",null,null);
+        sm.sendTextMessage("8013069900",null,"Hi Priya",null,null);
     }
 
     public void dialMautushi(View view) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:9903458751"));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:8013069900"));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
